@@ -12,7 +12,7 @@ class WebScraper:
         self.res = None
         self.soap = None
         self.articles = set()
-        self.download_date = dt.datetime.now().strftime('%Y-%M-%d')
+        self.download_date = dt.datetime.now().strftime('%Y-%m-%d')
 
     def web_reader(self):
 
