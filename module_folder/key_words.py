@@ -10,4 +10,4 @@ key_words = {
     'Motoristé':['Motoristé'],
 }
 
-key_person = ['Babiš','Fiala','Havlíček','Pekarová','Turek','Konečná','Macinka','Rakušan','Jurečka']
+key_person = ['Babiš','Fiala','Havlíček','Pekarová','Turek','Konečná','Macinka','Rakušan','Jurečka','Farský','Hřib']
