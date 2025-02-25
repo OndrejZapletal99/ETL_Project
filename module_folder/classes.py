@@ -134,3 +134,25 @@ class SqlManager:
         except Exception as e:
             print(f"Something went wrong: {e}")
             return None
+
+    def append_existing_table(self,table_name: str, database: str, data_frame: pd.DataFrame):
+
+        if self.engine is None:
+            print("No connection to database, please create a connection")
+            return None
+
+        try:
+            temp_df = self.execute_query_to_df(
+                f"TABLE_NAME FROM [{database}].INFORMATION_SCHEMA.TABLES "
+                f"WHERE TABLE_NAME = '{table_name}'"
+            )
+            if  temp_df.empty:
+                print("Table does not exist, please create a table")
+                return None
+            
+            print('Data will be inserted in a moment')
+            
+        except Exception as e:
+            print(f"Something went wrong: {e}")
+            return None
+        
