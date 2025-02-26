@@ -31,6 +31,7 @@ class WebScraper:
         )
         return df_articles
 
+
 class SqlManager:
     def __init__(self, server: str, database: str, odbc_driver: str):
         self.server = server
@@ -38,8 +39,7 @@ class SqlManager:
         self.odbc_driver = odbc_driver
         self.engine = None
         self.connection_string = (
-            f"mssql+pyodbc://@{self.server}/{self.database}?"
-            f"trusted_connection=yes&driver={self.odbc_driver}"
+            f"mssql+pyodbc://@{self.server}/{self.database}?trusted_connection=yes&driver={self.odbc_driver}"
         )
         self.ssms_mapping_types = {
             "int64": "BIGINT",
@@ -106,8 +106,7 @@ class SqlManager:
 
         try:
             temp_df = self.execute_query_to_df(
-                f"TABLE_NAME FROM [{database}].INFORMATION_SCHEMA.TABLES "
-                f"WHERE TABLE_NAME = '{table_name}'"
+                f"TABLE_NAME FROM [{database}].INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = '{table_name}'"
             )
             if not temp_df.empty:
                 print("Table already exists, please select another method (Append, Overwrite, Truncate)")
@@ -135,24 +134,24 @@ class SqlManager:
             print(f"Something went wrong: {e}")
             return None
 
-    def append_existing_table(self,table_name: str, database: str, data_frame: pd.DataFrame):
-
+    def append_existing_table(self, table_name: str, database: str, data_frame: pd.DataFrame):
         if self.engine is None:
             print("No connection to database, please create a connection")
             return None
 
         try:
             temp_df = self.execute_query_to_df(
-                f"TABLE_NAME FROM [{database}].INFORMATION_SCHEMA.TABLES "
-                f"WHERE TABLE_NAME = '{table_name}'"
+                f"TABLE_NAME FROM [{database}].INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = '{table_name}'"
             )
-            if  temp_df.empty:
+            if temp_df.empty:
                 print("Table does not exist, please create a table")
                 return None
-            
-            print('Data will be inserted in a moment')
-            
+
+            print("Data will be inserted in a moment")
+            data_frame.to_sql(
+                name=table_name, schema="dbo", if_exists="append", con=self.engine, index=False
+            )
+            print("Data successfully appended")
         except Exception as e:
             print(f"Something went wrong: {e}")
             return None
-        

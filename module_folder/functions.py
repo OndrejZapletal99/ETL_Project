@@ -83,7 +83,7 @@ def cols_to_bool(df: pd.DataFrame, list_of_columns: list):
             raise ValueError(f'The folllowing columns are not in the DF: {missing_cols}')
         
         for col in list_of_columns:
-            df[col] = df[col].astype('boolean')
+            df[col] = df[col].astype(bool)
     
     except Exception as e:
         print(f'Failed to convert columns to dtype boolean: {e}')
