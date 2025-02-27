@@ -6,6 +6,33 @@ from sqlalchemy import create_engine, text
 
 
 class WebScraper:
+
+    """
+    A web scraper class to extract articles from a given URL.
+
+    Attributes:
+    ----------
+    url : str
+        The URL of the website to scrape.
+    res : requests.Response or None
+        The HTTP response object after requesting the URL.
+    soap : bs4.BeautifulSoup or None
+        Parsed HTML content of the webpage.
+    articles : set
+        A set of extracted articles, each represented as a tuple (title, link, download_date).
+    download_date : str
+        The date when the scraping was performed (YYYY-MM-DD).
+
+    Methods:
+    -------
+    web_reader():
+        Fetches the webpage content and parses it into BeautifulSoup.
+    article_find():
+        Extracts article titles and links from the parsed HTML.
+    articles_to_df():
+        Converts the extracted articles into a Pandas DataFrame.
+    """
+    
     def __init__(self, url):
         self.url = url
         self.res = None
@@ -14,10 +41,20 @@ class WebScraper:
         self.download_date = dt.datetime.now().strftime("%Y-%m-%d")
 
     def web_reader(self):
-        self.res = requests.get(self.url)
-        self.soap = bs4.BeautifulSoup(self.res.text, "lxml")
+        """Fetches the webpage content and parses it into BeautifulSoup."""
+        try:
+            self.res = requests.get(self.url,timeout = 10)
+            self.res.raise_for_status()
+            self.soap = bs4.BeautifulSoup(self.res.text, "lxml")
+        except requests.exceptions.RequestException as e:
+            print(f'Something went wrong {e}')
+            self.soap = None
 
     def article_find(self):
+        """Extracts article titles and links from the parsed HTML."""
+        if self.soap is None:
+            print('Error: No parsed HTML, call web_reader()')
+
         for article in self.soap.select(".c_aM.c_aP"):
             title = article.get_text(strip=True)
             a_tag = article.find("a")
@@ -26,6 +63,7 @@ class WebScraper:
                 self.articles.add((title, link, self.download_date))
 
     def articles_to_df(self):
+        """Converts the extracted articles into a Pandas DataFrame."""
         df_articles = pd.DataFrame(
             self.articles, columns=["Title", "Link", "Download_Date"]
         )
