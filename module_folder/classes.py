@@ -71,6 +71,39 @@ class WebScraper:
 
 
 class SqlManager:
+    """
+    A class to manage SQL Server database connections and execute queries.
+
+    Attributes:
+    ----------
+    server : str
+        The SQL Server name or address.
+    database : str
+        The database name to connect to.
+    odbc_driver : str
+        The ODBC driver name for the connection.
+    engine : sqlalchemy.engine.Engine or None
+        The SQLAlchemy engine instance for database interaction.
+    connection_string : str
+        The connection string used to establish the database connection.
+    ssms_mapping_types : dict
+        A dictionary mapping Pandas data types to SQL Server data types.
+
+    Methods:
+    -------
+    connect():
+        Establishes a connection to the database.
+    disconnect():
+        Closes the database connection.
+    execute_query_to_df(after_select_text: str):
+        Executes a SQL SELECT query and returns the result as a Pandas DataFrame.
+    execute_query(sql_statement: str):
+        Executes a SQL query that does not return a result (INSERT, UPDATE, DELETE).
+    create_table(table_name: str, database: str, data_frame: pd.DataFrame):
+        Creates a table in the specified database based on a given DataFrame.
+    append_existing_table(table_name: str, database: str, data_frame: pd.DataFrame):
+        Appends data from a DataFrame to an existing table in the database.
+    """
     def __init__(self, server: str, database: str, odbc_driver: str):
         self.server = server
         self.database = database
@@ -93,20 +126,37 @@ class SqlManager:
         }
 
     def connect(self):
+        """Establishes a connection to the database."""
         try:
             self.engine = create_engine(self.connection_string)
             print("Successfully connected")
             return self.engine
         except Exception as e:
             print(f"Something went wrong: {e}")
+            raise
 
     def disconnect(self):
+        """Closes the database connection."""
         if self.engine is not None:
             self.engine.dispose()
             self.engine = None
             print("Connection closed")
+        else:
+            print('No active connection')
 
     def execute_query_to_df(self, after_select_text: str):
+        """
+        Executes a SQL SELECT query and returns the result as a Pandas DataFrame.
+
+        Parameters:
+        after_select_text : str
+            The part of the SQL query that follows "SELECT".
+
+        Returns:
+        -------
+        pd.DataFrame or None
+            A DataFrame containing the query results, or None if an error occurs.
+        """
         if self.engine is None:
             print("No connection to database, please create a connection")
             return None
@@ -117,9 +167,20 @@ class SqlManager:
             return df
         except Exception as e:
             print(f"Something went wrong: {e}")
-            return None
+            raise
 
     def execute_query(self, sql_statement: str):
+        """
+        Executes a SQL query that does not return a result (INSERT, UPDATE, DELETE).
+
+        Parameters:
+        sql_statement : str
+            The SQL statement to execute.
+
+        Returns:
+        -------
+        None
+        """
         if self.engine is None:
             print("No connection to database, please create a connection")
             return None
@@ -130,9 +191,24 @@ class SqlManager:
                 connection.commit()
         except Exception as e:
             print(f"Something went wrong while executing the query: {e}")
-            return None
+            raise
 
     def create_table(self, table_name: str, database: str, data_frame: pd.DataFrame):
+        """
+        Creates a table in the specified database based on the structure of a given DataFrame.
+
+        Parameters:
+        table_name : str
+            The name of the table to create.
+        database : str
+            The database where the table should be created.
+        data_frame : pd.DataFrame
+            The DataFrame whose structure defines the table schema.
+
+        Returns:
+        -------
+        None
+        """
         columns_and_types = {
             col: self.ssms_mapping_types.get(str(dtype), "NVARCHAR(MAX)")
             for col, dtype in data_frame.dtypes.to_dict().items()
@@ -170,9 +246,24 @@ class SqlManager:
                 print(f"Failed to create table '{table_name}'")
         except Exception as e:
             print(f"Something went wrong: {e}")
-            return None
+            raise
 
     def append_existing_table(self, table_name: str, database: str, data_frame: pd.DataFrame):
+        """
+        Appends data from a DataFrame to an existing table in the database.
+
+        Parameters:
+        table_name : str
+            The name of the table where data will be appended.
+        database : str
+            The database containing the table.
+        data_frame : pd.DataFrame
+            The DataFrame with data to be inserted.
+
+        Returns:
+        -------
+        None
+        """
         if self.engine is None:
             print("No connection to database, please create a connection")
             return None
@@ -192,4 +283,4 @@ class SqlManager:
             print("Data successfully appended")
         except Exception as e:
             print(f"Something went wrong: {e}")
-            return None
+            raise
