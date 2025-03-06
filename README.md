@@ -23,7 +23,7 @@
 
 ## 📝 Modules and Descriptions
 
-### 🔍 `classes.py`
+### 🔍 [`classes.py`](https://github.com/OndrejZapletal99/ETL_Project/blob/main/module_folder/classes.py)
 #### **WebScraper** – Web Article Scraping
 The `WebScraper` class allows downloading and extracting articles from a given URL.
 
@@ -45,7 +45,7 @@ The `SqlManager` class allows connecting to an SQL server, executing queries, an
 
 ---
 
-### 🔑 `key_words.py`
+### 🔑 [`key_words.py`](https://github.com/OndrejZapletal99/ETL_Project/blob/main/module_folder/key_words.py)
 Contains a dictionary of keywords `key_words` that maps categories to corresponding terms.
 
 **Example:**
@@ -61,7 +61,7 @@ Additionally, it includes a list `key_person`, which contains key person names.
 
 ---
 
-### 🛠 `functions.py`
+### 🛠 [`functions.py`](https://github.com/OndrejZapletal99/ETL_Project/blob/main/module_folder/functions.py)
 Contains helper functions for handling and transforming `DataFrame` columns.
 
 **Main Functions:**
