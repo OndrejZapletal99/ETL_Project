@@ -5,7 +5,7 @@ key_words = {
     'Spolu':['Spolu','ODS','TOP09'],
     'Stačilo':['Stačilo','Komunisté','Komunisti'],
     'SPD': ['SPD'],
-    'Piráti':['Pirátí','Pirát'],
+    'Piráti':['Piráti','Pirát'],
     'STAN':['STAN', 'Starostové','Starostové a nezávislí'],
     'Motoristé':['Motoristé'],
     'Válka_na_Ukrajině':['Ukrajina','Ukrajině','Ukrajinské']
