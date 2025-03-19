@@ -196,3 +196,45 @@ def cols_to_datetime(df: pd.DataFrame, list_of_columns: list):
         print(f'Failed to convert columns to dtype datetime: {e}')
         raise
 
+
+def dataframe_info(df: pd.DataFrame):
+    """
+    Generate a summary DataFrame containing metadata about the columns of the input DataFrame.
+
+    Args:
+        df (pd.DataFrame): The input DataFrame.
+
+    Returns:
+        pd.DataFrame: A summary DataFrame with the following columns:
+            - Column_name: Name of each column.
+            - Total records: Total number of records in each column.
+            - Missing Values: Number of missing (NaN) values in each column.
+            - Data type: Data type of each column.
+            - Unique values: Number of unique values in each column.
+    """
+    df_summary = pd.DataFrame({
+        'Column_name': df.columns,
+        'Total records': [df[col].size for col in df.columns],
+        'Missing Values': [df[col].isna().sum() for col in df.columns],
+        'Data type': [df[col].dtype for col in df.columns],
+        'Unique values': [df[col].nunique() for col in df.columns]
+    })
+
+    return df_summary
+
+def value_counts_for_selected_columns(df: pd.DataFrame, columns: list):
+    """
+    Print value counts for the selected columns in the given DataFrame.
+
+    Args:
+        df (pd.DataFrame): The input DataFrame.
+        columns (list): List of column names for which value counts should be displayed.
+
+    Returns:
+        None
+    """
+    for col in columns:
+        if col in df.columns:
+            print(f'Value counts of {col}: \n{df[col].value_counts()}\n')
+        else:
+            print(f'Column "{col}" not found in DataFrame.\n')
