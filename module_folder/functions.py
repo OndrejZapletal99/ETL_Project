@@ -195,7 +195,31 @@ def cols_to_datetime(df: pd.DataFrame, list_of_columns: list):
     except Exception as e:
         print(f'Failed to convert columns to dtype datetime: {e}')
         raise
+    
+def cols_to_category(df: pd.DataFrame, list_of_columns: list):
+    """
+    Converts the data type of specified columns in the given DataFrame to 'category'.
 
+    Parameters:
+    df (pd.DataFrame): The input DataFrame.
+    list_of_columns (list): A list of column names to be converted to dtype 'category'.
+
+    Raises:
+    ValueError: If any column in list_of_columns is not found in the DataFrame.
+    Exception: If an error occurs during type conversion.
+    """
+    try:
+        missing_cols = [col for col in list_of_columns if col not in df.columns]
+
+        if missing_cols:
+            raise ValueError(f'The following columns are not in the DataFrame: {missing_cols}')
+        
+        for col in list_of_columns:
+            df[col] = df[col].astype('category')
+    
+    except Exception as e:
+        print(f'Failed to convert columns to dtype category: {e}')
+        raise
 
 def dataframe_info(df: pd.DataFrame):
     """
